@@ -1,314 +1,496 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robert | Publisher & Developer</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.ico">
-    <style>
-        /* Modern Reset & CSS Variables */
-        :root {
-            --bg-color: #0d0e15;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --accent-glow: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
-            --accent-solid: #a855f7;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robert The Publisher</title>
+  <link rel="icon" href="assets/main.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+    :root {
+      --red: #e01010;
+      --dark-red: #7a0000;
+      --black: #080808;
+      --white: #f5f5f5;
+      --card-bg: rgba(255,255,255,0.05);
+      --card-border: rgba(255,60,60,0.25);
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-            position: relative;
-        }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      cursor: default;
+    }
 
-        /* Ambient Background Glows */
-        body::before, body::after {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: var(--accent-glow);
-            filter: blur(120px);
-            opacity: 0.15;
-            z-index: 0;
-        }
+    /* ── HERO ── */
+    #hero {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, var(--red) 0%, var(--dark-red) 35%, var(--black) 100%);
+      z-index: 10;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
-        body::before { top: 10%; left: 10%; }
-        body::after { bottom: 10%; right: 10%; }
+    #hero.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-40px);
+    }
 
-        /* Main Container */
-        .container {
-            width: 90%;
-            max-width: 800px;
-            z-index: 1;
-            padding: 20px 0;
-        }
+    .hero-icon {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(224,16,16,0.7);
+      margin-bottom: 28px;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
 
-        /* Glassmorphism Profile Card */
-        .profile-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(224,16,16,0.6); }
+      50%       { box-shadow: 0 0 70px rgba(224,16,16,1); }
+    }
 
-        .profile-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(168, 85, 247, 0.4);
-        }
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      letter-spacing: 0.12em;
+      line-height: 1;
+      text-align: center;
+      background: linear-gradient(90deg, #fff 30%, #ff6666 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        /* Avatar styling */
-        .avatar-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 24px;
-        }
+    .hero-sub {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
 
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #1e1e2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
-            background-image: linear-gradient(var(--bg-color), var(--bg-color)), var(--accent-glow);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-        }
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.6;
+      animation: bounce 1.8s ease-in-out infinite;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+    }
 
-        .avatar svg {
-            width: 60px;
-            height: 60px;
-            fill: url(#gradient);
-        }
+    .scroll-hint svg { width: 22px; height: 22px; fill: var(--white); }
 
-        /* Typography */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.05em;
-            background: var(--accent-glow);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(8px); }
+    }
 
-        .tagline {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            min-height: 1.5em; /* Prevents layout shift during typing */
-        }
+    /* ── MAIN STAGE ── */
+    #stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a0000 0%, var(--black) 60%);
+    }
 
-        p.bio {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto 32px;
-        }
+    #stage.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
 
-        /* Project / Tech Grid */
-        .skills-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
+    /* Ambient glow */
+    #stage::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,10,10,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .skill-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-            transition: all 0.2s ease;
-        }
+    /* ── TOP BAR ── */
+    .topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 36px;
+      border-bottom: 1px solid rgba(255,40,40,0.2);
+      backdrop-filter: blur(6px);
+    }
 
-        .skill-badge:hover {
-            background: rgba(168, 85, 247, 0.1);
-            border-color: var(--accent-solid);
-            transform: scale(1.05);
-        }
+    .topbar img {
+      width: 34px; height: 34px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
 
-        /* Buttons & Socials */
-        .links-group {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+    .topbar-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
 
-        .btn {
-            text-decoration: none;
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
+    /* ── SECTION HEADER ── */
+    .section-header {
+      flex-shrink: 0;
+      padding: 32px 36px 16px;
+    }
 
-        .btn-primary {
-            background: var(--accent-glow);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-        }
+    .section-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.08em;
+      background: linear-gradient(90deg, var(--red), #ff8080);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
-        }
+    .section-desc {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
+    /* ── HORIZONTAL SCROLL TRACK ── */
+    .scroll-track-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      padding: 0 36px;
+    }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--text-secondary);
-            transform: translateY(-2px);
-        }
+    .scroll-track {
+      display: flex;
+      gap: 28px;
+      height: 100%;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
 
-        /* Footer styling */
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.3);
-        }
+    .scroll-track::-webkit-scrollbar { height: 4px; }
+    .scroll-track::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
+    .scroll-track::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
 
-        /* Quick responsive scaling */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .profile-card { padding: 30px 20px; }
-            .btn { width: 100%; justify-content: center; }
-        }
-    </style>
+    /* ── CARD ── */
+    .card {
+      flex-shrink: 0;
+      width: 280px;
+      min-height: 340px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 32px 24px;
+      scroll-snap-align: start;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.6s ease both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.25s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(224,16,16,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(224,16,16,0.6);
+      box-shadow: 0 20px 60px rgba(224,16,16,0.25);
+    }
+
+    .card-icon {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-icon { transform: scale(1.08) rotate(-2deg); }
+
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+
+    .card-desc {
+      font-size: 0.7rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .card-btn {
+      margin-top: 8px;
+      padding: 10px 24px;
+      border: 1px solid var(--red);
+      border-radius: 40px;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+
+    .card-btn:hover {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(224,16,16,0.5);
+    }
+
+    /* ── RICKROLL CARD ── */
+    .rick-card {
+      cursor: pointer;
+    }
+
+    .rick-btn {
+      padding: 12px 28px;
+      background: linear-gradient(90deg, #e01010, #ff4040);
+      border: none;
+      border-radius: 40px;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(224,16,16,0.4);
+    }
+
+    .rick-btn:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(224,16,16,0.6); }
+
+    .rickrolled-text {
+      display: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      text-align: center;
+      animation: flash 0.4s ease;
+    }
+
+    @keyframes flash {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+
+    .rickrolled-text.show { display: block; }
+
+    /* ── BACK BUTTON ── */
+    .back-btn {
+      position: fixed;
+      top: 18px; right: 36px;
+      padding: 8px 20px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      color: rgba(255,255,255,0.5);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      z-index: 20;
+      display: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .back-btn:hover { border-color: var(--red); color: var(--white); }
+
+    /* ── WHEEL SCROLL HINT ── */
+    .wheel-hint {
+      position: fixed;
+      bottom: 20px; right: 36px;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      display: none;
+    }
+
+    /* VERTICAL main.ico decoration */
+    .side-icon {
+      position: fixed;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      width: 200px;
+      object-fit: contain;
+      opacity: 0.06;
+      pointer-events: none;
+      display: none;
+    }
+
+    #stage.visible .side-icon { display: block; }
+    #stage.visible .back-btn  { display: block; }
+    #stage.visible .wheel-hint{ display: block; }
+
+    /* hidden youtube iframe */
+    #yt { display: none; }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <main class="profile-card">
-            <div class="avatar-container">
-                <div class="avatar">
-                    <svg viewBox="0 0 24 24">
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#6366f1" />
-                                <stop offset="50%" stop-color="#a855f7" />
-                                <stop offset="100%" stop-color="#ec4899" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                    </svg>
-                </div>
-            </div>
+  <!-- HERO -->
+  <section id="hero">
+    <!-- vertical main icon -->
+    <img src="assets/main.ico" alt="icon" class="hero-icon" />
+    <h1 class="hero-name">Robert<br>The Publisher</h1>
+    <p class="hero-sub">Portfolio &amp; Creations</p>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h12z"/></svg>
+    </div>
+  </section>
 
-            <h1>Robert the Publisher</h1>
-            <div class="tagline" id="tagline"></div>
+  <!-- MAIN STAGE -->
+  <section id="stage">
+    <img src="assets/main.ico" alt="" class="side-icon" />
 
-            <p class="bio">
-                Crafting digital experiences at the intersection of development, publishing, and creative technology. Welcome to my GitHub space.
-            </p>
-
-            <div class="skills-container">
-                <span class="skill-badge">Frontend Development</span>
-                <span class="skill-badge">Digital Publishing</span>
-                <span class="skill-badge">UI/UX Design</span>
-                <span class="skill-badge">Open Source</span>
-                <span class="skill-badge">Creative Writing</span>
-            </div>
-
-            <div class="links-group">
-                <a href="mailto:tangtanghasan@gmail.com" class="btn btn-primary">
-                    Get in Touch
-                </a>
-                <a href="https://github.com/RobertThePublisher" target="_blank" rel="noopener" class="btn btn-secondary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    GitHub Profile
-                </a>
-            </div>
-        </main>
-
-        <footer>
-            &copy; <span id="year"></span> RobertThePublisher. Designed to inspire.
-        </footer>
+    <div class="topbar">
+      <img src="assets/main.ico" alt="logo" />
+      <span class="topbar-title">Robert The Publisher</span>
     </div>
 
-    <script>
-        // Update Footer Year
-        document.getElementById('year').textContent = new Date().getFullYear();
+    <div class="section-header">
+      <div class="section-label">Creations I Did</div>
+      <div class="section-desc">Scroll horizontally to explore ›</div>
+    </div>
 
-        // Custom Typing Effect
-        const phrases = ["Developer & Creator.", "Digital Publisher.", "Turning ideas into code."];
-        let i = 0;
-        let timer;
+    <div class="scroll-track-wrap">
+      <div class="scroll-track" id="track">
 
-        function typingEffect() {
-            let word = phrases[i].split("");
-            var loopTyping = function() {
-                if (word.length > 0) {
-                    document.getElementById('tagline').innerHTML += word.shift();
-                } else {
-                    setTimeout(deletingEffect, 2000);
-                    return false;
-                }
-                timer = setTimeout(loopTyping, 100);
-            };
-            loopTyping();
-        }
+        <!-- CARD 1 — Win12 Online -->
+        <div class="card">
+          <img src="assets/win12.ico" alt="Win12 Online" class="card-icon" />
+          <div class="card-title">Win12 Online</div>
+          <div class="card-desc">A full Windows 12 experience running entirely in your browser. Click to launch it.</div>
+          <a href="https://win12-web.github.io/win12_online" target="_blank" class="card-btn">Open →</a>
+        </div>
 
-        function deletingEffect() {
-            let word = phrases[i].split("");
-            var loopDeleting = function() {
-                if (word.length > 0) {
-                    word.pop();
-                    document.getElementById('tagline').innerHTML = word.join("");
-                } else {
-                    if (phrases.length > (i + 1)) {
-                        i++;
-                    } else {
-                        i = 0;
-                    }
-                    setTimeout(typingEffect, 500);
-                    return false;
-                }
-                timer = setTimeout(loopDeleting, 50);
-            };
-            loopDeleting();
-        }
+        <!-- CARD 2 — Rickroll -->
+        <div class="card rick-card" id="rickCard">
+          <div style="font-size:2.5rem">🎵</div>
+          <div class="card-title">Totally Normal Button</div>
+          <div class="card-desc" id="rickDesc">Click me. Something will happen.</div>
+          <button class="rick-btn" id="rickBtn" onclick="rickroll()">Click me</button>
+          <div class="rickrolled-text" id="rickText">YOU GOT RICKROLLED. XD</div>
+        </div>
 
-        typingEffect();
-    </script>
+      </div>
+    </div>
+
+    <div class="wheel-hint">← scroll →</div>
+  </section>
+
+  <!-- Hidden rickroll iframe -->
+  <iframe id="yt" width="1" height="1" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+
+  <button class="back-btn" onclick="goHero()">← Back</button>
+
+  <script>
+    const hero  = document.getElementById('hero');
+    const stage = document.getElementById('stage');
+    const track = document.getElementById('track');
+
+    let onStage = false;
+
+    /* ─ show stage ─ */
+    function goStage() {
+      hero.classList.add('hidden');
+      stage.classList.add('visible');
+      onStage = true;
+    }
+
+    /* ─ back to hero ─ */
+    function goHero() {
+      stage.classList.remove('visible');
+      hero.classList.remove('hidden');
+      onStage = false;
+    }
+
+    /* scroll down on hero → show stage */
+    window.addEventListener('wheel', (e) => {
+      if (!onStage && e.deltaY > 0) { goStage(); return; }
+      if (onStage) { track.scrollLeft += e.deltaY * 1.2; }
+    }, { passive: true });
+
+    /* touch swipe up on hero */
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; });
+    window.addEventListener('touchend',   (e) => {
+      const dy = touchStartY - e.changedTouches[0].clientY;
+      if (!onStage && dy > 40) goStage();
+    });
+
+    /* ─ RICKROLL ─ */
+    let ricked = false;
+    function rickroll() {
+      if (ricked) return;
+      ricked = true;
+      document.getElementById('yt').src =
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&start=0';
+      document.getElementById('rickBtn').style.display = 'none';
+      document.getElementById('rickDesc').textContent  = 'Never gonna give you up…';
+      document.getElementById('rickText').classList.add('show');
+    }
+  </script>
 </body>
 </html>
