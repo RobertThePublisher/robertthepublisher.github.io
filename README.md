@@ -1,13 +1,7 @@
 # 🪐 TheRealArchitect Portfolio
 
 > A high-performance, dark-crimson themed portfolio showcasing browser-based operating systems, AI implementations, and web utilities. Built with modern CSS custom properties, smooth horizontal snap-scrolling, and interactive elements.
-
----
-
-## 🚀 Live Demo
-Experience the interface live: 
-👉 **[Insert Your Production URL Here]**
-
+> 
 ---
 
 ## 🛠️ Project Showcase
